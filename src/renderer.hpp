@@ -1,5 +1,5 @@
-#ifndef RENDERER_HPP
-#define RENDERER_HPP
+#ifndef _RENDERER_HPP
+#define _RENDERER_HPP
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -14,30 +14,27 @@
 struct particle
 {
     float pos[4];
-    float vel[4];
+    float vel[4]; // avoid using vec3 [https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)]
+    float lt;
+    float _pad[3]; // padding for GL 430 layout
 };
 
 class Renderer
 {
 public:
 
-    Renderer();
+    Renderer(int particle_count, unsigned int particle_tex, unsigned int base_program, unsigned int compute_program);
     ~Renderer();
 
-    GLFWwindow *window;
-    void load_base_shader(const char* vertex_path, const char* fragment_path);
-    void load_compute_shader(const char* compute_path);
-    void load_texture(char const * path);
-    void gen_buffers();
     void render();
 
 private:
 
-    GLuint base_program;
-    GLuint compute_program;
-    GLuint SSBO;
-    GLuint particle_tex;
-    int particle_count = 128;
+    int particle_count; 
+    unsigned int particle_tex;
+    unsigned int base_program;
+    unsigned int compute_program;
+    unsigned int SSBO;
     float dt = 0.0f;
     void particles_init(particle vertices[]);
 };
