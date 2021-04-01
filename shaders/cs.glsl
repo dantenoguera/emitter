@@ -1,6 +1,6 @@
 #version 430
 
-layout (local_size_x = 2, local_size_y = 1, local_size_z = 1) in;
+layout (local_size_x = 16) in;
 
 struct particle
 {
@@ -16,6 +16,8 @@ layout(std430, binding = 0) buffer Pos {
 uniform float dt;
 uniform vec3 attr;
 
+
+// http://amindforeverprogramming.blogspot.com/2013/07/random-floats-in-glsl-330.html
 uint hash(uint x) 
 {
     x += ( x << 10u );
@@ -45,39 +47,32 @@ void main()
 
     vec3 pos = particles[gid].pos.xyz;
     vec3 vel = particles[gid].vel.xyz;
-    float lt = particles[gid].lt;
 
     vec3 dir = attr - pos;
-    float min_dist = 0.1f;
     float dist = length(dir);
 
+    float min_dist = 0.14f;
     if (dist < min_dist) {
-        dist = min_dist;
-    }
+        float low = -0.5f;
+        float high = 0.5f;
 
-    float G = 10000.0f;
-
-    vec3 a = G / (dist * dist) * normalize(dir);
-    vel += a * dt;
-    pos += vel * dt;
-
-    lt -= 0.008f;
-
-    if (lt < 0.0f)
-    {
-        float low = -20.0f;
-        float high = 20.0f;
-
-        lt = 1.0f;
         pos = vec3(0.0f, 0.5f, 0.0f);
+
         vel.x = low + random(vel.x) * (high - low);
         vel.y = low + random(vel.y) * (high - low);
         vel.z = low + random(vel.z) * (high - low);
+        
+        dir = attr - pos;
+        dist = length(dir);
     }
 
+    float G = 5.0f;
+    vec3 a = G / (dist * dist) * normalize(dir);
 
-    // Write back
+    vel += a * dt;
+    pos += vel * dt;
+
     particles[gid].pos.xyz = pos;
     particles[gid].vel.xyz = vel;
-    particles[gid].lt = lt;
+    particles[gid].lt = dist;
 }

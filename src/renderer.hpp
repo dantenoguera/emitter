@@ -35,7 +35,6 @@ private:
     unsigned int base_program;
     unsigned int compute_program;
     unsigned int SSBO;
-    float dt = 0.0f;
     void particles_init(particle vertices[]);
 };
 #endif

@@ -1,12 +1,12 @@
 #include <GL/glew.h>
-
-#include <string>
-#include <iostream>
 #include <cstdlib>
+#include <time.h>
 
 #include "renderer.hpp"
 
 extern Camera camera;
+extern GLFWwindow *window;
+extern float dt;
 extern int SCREEN_WIDTH;
 extern int SCREEN_HEIGHT;
 
@@ -39,14 +39,12 @@ Renderer::~Renderer()
 
 void Renderer::render()
 {
-    float t = glfwGetTime();
-
     glUseProgram(compute_program);
 	glUniform1f(glGetUniformLocation(compute_program, "dt"), dt); 
-	glUniform3f(glGetUniformLocation(compute_program, "attr"), 0.0f, -2.0f, 0.0f);
+    
+	glUniform3f(glGetUniformLocation(compute_program, "attr"), 0.0f, -0.8f, 0.0f);
 
-    int workgroup_size = 2;
-    int workgroups = particle_count / workgroup_size;
+    int workgroups = particle_count / 16;
     glDispatchCompute(workgroups, 1, 1);
 
 #if 0
@@ -78,17 +76,17 @@ void Renderer::render()
 
 	glPointSize(16);
 	glDrawArrays(GL_POINTS, 0, particle_count);
-
-    dt = glfwGetTime() - t; // 0.016 aprox
 }
 
 void Renderer::particles_init(particle particles[])
 {
-    float low = -20.0f;
-    float high = 20.0f;
+    srand(time(NULL));
 
     for (int i = 0; i < particle_count; i++)
     {
+        float low = -0.5f;
+        float high = 0.5f;
+
 		particles[i].pos[0] = 0.0f;
 		particles[i].pos[1] = 0.5f;
 		particles[i].pos[2] = 0.0f;
@@ -98,6 +96,6 @@ void Renderer::particles_init(particle particles[])
 		particles[i].vel[1] = low + rand() / float(RAND_MAX) * (high - low);
 		particles[i].vel[2] = low + rand() / float(RAND_MAX) * (high - low);
 
-        particles[i].lt = rand() / float(RAND_MAX);
+        particles[i].lt = 1.0f;
     }
 }

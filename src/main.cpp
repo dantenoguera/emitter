@@ -1,3 +1,5 @@
+#include <thread>
+#include <chrono>
 #include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -14,10 +16,12 @@ Camera camera;
 int SCREEN_WIDTH = 800;
 int SCREEN_HEIGHT = 600;
 
+bool camera_enabled = true;
 float last_x = float(SCREEN_WIDTH) / 2, last_y = float(SCREEN_HEIGHT) / 2;
 bool first_mouse = true;
 
-float dt = 0.0f;
+GLFWwindow *window;
+float dt = 0.016f;
 
 ////////////////////////////////////////////////////////////////////
 // Callbacks
@@ -25,30 +29,6 @@ float dt = 0.0f;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
-}
-
-void process_input(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    float velocity = camera.speed * dt;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    {
-        camera.position += camera.front * velocity;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    {
-        camera.position -= camera.front * velocity;
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    {
-        camera.position -= glm::normalize(glm::cross(camera.front, camera.up)) * velocity; 
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    {
-        camera.position += glm::normalize(glm::cross(camera.front, camera.up)) * velocity; 
-    }
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -66,16 +46,69 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     last_x = xpos;
     last_y = ypos;
 
-    camera.change_front(xoffset, yoffset);
+    if (camera_enabled) 
+    {
+        camera.change_front(xoffset, yoffset);
+    }
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.change_fov(yoffset);
+    if (camera_enabled) 
+    {
+        camera.change_fov(yoffset);
+    }
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+        if (!camera_enabled)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            camera_enabled = true;
+        }
+        else 
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            camera_enabled = false;
+        }
+    }
 }
 ////////////////////////////////////////////////////////////////////
 
-GLFWwindow* glfw_init()
+void process_input(GLFWwindow *window)
+{
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, true);
+    }
+
+    if (camera_enabled)
+    {
+        float velocity = camera.speed * dt;
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            camera.position += camera.front * velocity;
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        {
+            camera.position -= camera.front * velocity;
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        {
+            camera.position -= glm::normalize(glm::cross(camera.front, camera.up)) * velocity; 
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        {
+            camera.position += glm::normalize(glm::cross(camera.front, camera.up)) * velocity; 
+        }
+    }
+}
+
+void glfw_init()
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -84,7 +117,7 @@ GLFWwindow* glfw_init()
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow *window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "OpenGL", NULL, NULL);
+    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "OpenGL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -95,10 +128,10 @@ GLFWwindow* glfw_init()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    return window;
+    camera_enabled = true;
 }
 
 unsigned int load_texture(char const * path)
@@ -138,10 +171,20 @@ unsigned int load_texture(char const * path)
     return texture;
 }
 
+void dt_print()
+{
+    while(1)
+    {
+        std::cout << '\r' << dt << std::flush;
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    }
+}
 
 int main()
 {
-    GLFWwindow *window = glfw_init();
+    std::thread dt_thread (dt_print);
+
+    glfw_init();
     glewInit();
 
 	glEnable(GL_BLEND);
@@ -155,7 +198,7 @@ int main()
 
     while(!glfwWindowShouldClose(window))
     {
-        const float t = glfwGetTime();
+        float t = glfwGetTime();
         
         process_input(window);
 
@@ -170,8 +213,6 @@ int main()
         dt = glfwGetTime() - t;
     }
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
     exit(EXIT_SUCCESS);
 }
 

@@ -5,12 +5,12 @@ project('emitter', 'cpp',
 cc = meson.get_compiler('cpp')
 
 m_dep = cc.find_library('m')
+pthread_dep = cc.find_library('pthread')
 gl_dep = cc.find_library('GL')
 glew_dep = cc.find_library('GLEW')
 glfw_dep = cc.find_library('glfw')
 
-sources = [ 'src/main.cpp', 'src/renderer.cpp' ]
 
-emitter = executable('emitter', sources,
-    dependencies: [ m_dep, gl_dep, glew_dep, glfw_dep ]
-)
+
+emitter = executable('emitter', [ 'src/main.cpp', 'src/renderer.cpp' ],
+    dependencies: [ m_dep, pthread_dep, gl_dep, glew_dep, glfw_dep ])
