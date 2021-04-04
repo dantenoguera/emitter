@@ -187,8 +187,8 @@ int main()
     glfw_init();
     glewInit();
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     int particles = 512;
     unsigned int particle_tex = load_texture("../res/particle.bmp");

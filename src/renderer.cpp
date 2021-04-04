@@ -18,11 +18,11 @@ Renderer::Renderer(int particle_count, unsigned int particle_tex, unsigned int b
     compute_program { compute_program }
 {
     // No more default VAO with OpenGL 3.3+ core profile context,
-	// so in order to make our SSBOs render create and bind a VAO
-	// that's never used again
-	GLuint VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+    // so in order to make our SSBOs render create and bind a VAO
+    // that's never used again
+    GLuint VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
     glGenBuffers(1, &SSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, SSBO);
@@ -37,9 +37,9 @@ Renderer::Renderer(int particle_count, unsigned int particle_tex, unsigned int b
 void Renderer::render()
 {
     glUseProgram(compute_program);
-	glUniform1f(glGetUniformLocation(compute_program, "dt"), dt); 
-    
-	glUniform3f(glGetUniformLocation(compute_program, "attr"), 0.0f, -0.8f, 0.0f);
+    glUniform1f(glGetUniformLocation(compute_program, "dt"), dt); 
+
+    glUniform3f(glGetUniformLocation(compute_program, "attr"), 0.0f, -0.8f, 0.0f);
 
     int workgroups = particle_count / 16;
     glDispatchCompute(workgroups, 1, 1);
@@ -53,7 +53,7 @@ void Renderer::render()
     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 #endif
 
-	glUseProgram(base_program);
+    glUseProgram(base_program);
     glm::mat4 projection = glm::perspective(glm::radians(camera.fov), float(SCREEN_WIDTH) / float(SCREEN_HEIGHT), 0.1f, 100.0f);
     glUniformMatrix4fv(glGetUniformLocation(base_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -63,16 +63,16 @@ void Renderer::render()
     glm::mat4 model = glm::mat4(1.0f);
     glUniformMatrix4fv(glGetUniformLocation(base_program, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
-	glBindTexture(GL_TEXTURE_2D, particle_tex);
+    glBindTexture(GL_TEXTURE_2D, particle_tex);
 
-	glBindBuffer(GL_ARRAY_BUFFER, SSBO);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(particle), 0);
-	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(particle), (void *) (offsetof(particle, lt)));
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, SSBO);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(particle), 0);
+    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(particle), (void *) (offsetof(particle, lt)));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
 
-	glPointSize(16);
-	glDrawArrays(GL_POINTS, 0, particle_count);
+    glPointSize(16);
+    glDrawArrays(GL_POINTS, 0, particle_count);
 }
 
 void Renderer::particles_init(particle particles[])
@@ -84,13 +84,13 @@ void Renderer::particles_init(particle particles[])
         float low = -0.5f;
         float high = 0.5f;
 
-		particles[i].pos[0] = 0.0f;
-		particles[i].pos[1] = 0.5f;
-		particles[i].pos[2] = 0.0f;
-		particles[i].pos[3] = 1.0f;
+        particles[i].pos[0] = 0.0f;
+        particles[i].pos[1] = 0.5f;
+        particles[i].pos[2] = 0.0f;
+        particles[i].pos[3] = 1.0f;
 
-		particles[i].vel[0] = low + rand() / float(RAND_MAX) * (high - low);
-		particles[i].vel[1] = low + rand() / float(RAND_MAX) * (high - low);
-		particles[i].vel[2] = low + rand() / float(RAND_MAX) * (high - low);
+        particles[i].vel[0] = low + rand() / float(RAND_MAX) * (high - low);
+        particles[i].vel[1] = low + rand() / float(RAND_MAX) * (high - low);
+        particles[i].vel[2] = low + rand() / float(RAND_MAX) * (high - low);
     }
 }
