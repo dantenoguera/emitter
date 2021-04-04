@@ -18,7 +18,7 @@ $ ninja
 $ ./emitter
 ```
 
-WASD to move camera
-Mouse to change camera direction
-Mouse wheel to zoom
-Space bar to leave camera mode
+WASD to move camera  
+Mouse to change camera direction  
+Mouse wheel to zoom  
+Space bar to leave camera mode  
