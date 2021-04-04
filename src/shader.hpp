@@ -1,6 +1,6 @@
-#ifndef _SHADER_HPP
-#define _SHADER_HPP
+#pragma once
 
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -118,5 +118,3 @@ unsigned int load_compute_shader(const char* compute_path)
 
     return compute_program;
 }
-
-#endif

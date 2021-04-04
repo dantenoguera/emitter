@@ -1,5 +1,5 @@
 project('emitter', 'cpp',
-        default_options: [ 'cpp_std=c++11', 'warning_level=2' ]
+        default_options: [ 'cpp_std=c++14', 'warning_level=2' ]
 )
 
 cc = meson.get_compiler('cpp')

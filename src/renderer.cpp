@@ -34,9 +34,6 @@ Renderer::Renderer(int particle_count, unsigned int particle_tex, unsigned int b
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, SSBO);
 }
 
-Renderer::~Renderer()
-{}
-
 void Renderer::render()
 {
     glUseProgram(compute_program);
@@ -95,7 +92,5 @@ void Renderer::particles_init(particle particles[])
 		particles[i].vel[0] = low + rand() / float(RAND_MAX) * (high - low);
 		particles[i].vel[1] = low + rand() / float(RAND_MAX) * (high - low);
 		particles[i].vel[2] = low + rand() / float(RAND_MAX) * (high - low);
-
-        particles[i].lt = 1.0f;
     }
 }

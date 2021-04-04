@@ -1,5 +1,4 @@
-#ifndef _RENDERER_HPP
-#define _RENDERER_HPP
+#pragma once
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -24,7 +23,6 @@ class Renderer
 public:
 
     Renderer(int particle_count, unsigned int particle_tex, unsigned int base_program, unsigned int compute_program);
-    ~Renderer();
 
     void render();
 
@@ -37,4 +35,3 @@ private:
     unsigned int SSBO;
     void particles_init(particle vertices[]);
 };
-#endif

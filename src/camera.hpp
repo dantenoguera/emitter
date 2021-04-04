@@ -1,5 +1,4 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#pragma once
 
 #include <glm/glm.hpp>
 
@@ -45,9 +44,9 @@ public:
             pitch = -89.0f;
         }
 
-        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front.y = sin(glm::radians(pitch));
-        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.x = cosf(glm::radians(yaw)) * cosf(glm::radians(pitch));
+        front.y = sinf(glm::radians(pitch));
+        front.z = sinf(glm::radians(yaw)) * cosf(glm::radians(pitch));
         front = glm::normalize(front);
     }
 
@@ -71,5 +70,3 @@ public:
         }
     }
 };
-
-#endif

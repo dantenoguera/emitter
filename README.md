@@ -1,5 +1,6 @@
-# emitter
-basic compute shader based particle emitter
+## Particle emitter
+basic particle emitter with the purpose to learn a bit about 
+OpenGL compute shaders
 
 Dependencies:
 * meson
@@ -17,6 +18,7 @@ $ ninja
 $ ./emitter
 ```
 
-WASD to move camera
-Mouse to change camera direction
-Mose wheel to zoom
+WASD to move camera 
+Mouse to change camera direction 
+Mouse wheel to zoom 
+Space bar to leave camera mode
