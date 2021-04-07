@@ -1,5 +1,5 @@
 ## Particle emitter
-basic particle emitter with the purpose to learn a bit about 
+basic particle emitter with the purpose of learning a bit about 
 OpenGL compute shaders
 
 ![emitter](emitter.png)
