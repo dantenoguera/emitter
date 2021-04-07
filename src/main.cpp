@@ -21,7 +21,7 @@ float last_x = float(SCREEN_WIDTH) / 2, last_y = float(SCREEN_HEIGHT) / 2;
 bool first_mouse = true;
 
 GLFWwindow *window;
-float dt = 0.016f;
+float dt ;
 
 ////////////////////////////////////////////////////////////////////
 // Callbacks

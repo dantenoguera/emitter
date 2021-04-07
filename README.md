@@ -2,6 +2,8 @@
 basic particle emitter with the purpose to learn a bit about 
 OpenGL compute shaders
 
+![emitter](emitter.png)
+
 Dependencies:
 * meson
 * GLFW
